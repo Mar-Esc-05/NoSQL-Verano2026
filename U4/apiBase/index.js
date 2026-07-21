@@ -1,9 +1,165 @@
 const express = require("express");
 const morgan = require("morgan");
+const mongoose = require("mongoose");
 const app = express();
+app.use(express.json());
 const port = 3000;
 
 app.use(morgan("dev"));
+
+mongoose.connect("mongodb://127.0.0.1:27017/escuela2").then(() => {
+    console.log("Conectado correctamente a MongoDB");
+}).catch((error)=>{
+    console.error("Error al conectar a MongoDB:", error);
+});
+
+const alumnoSchema = new mongoose.Schema(
+    {
+        nombre: {type: String, required: true, trim: true},
+        carrera: {type: String, required: true, trim: true},
+        semestre: {type: Number, required: true, min: 1},
+    },
+    {
+        timestamps: true
+    }
+);
+
+const Alumno = mongoose.model("Alumno", alumnoSchema);
+
+
+let alumnos = [
+    {
+        id: 1,
+        nombre: "Mar",
+        carrera: "ISC",
+        semestre: 7,
+    },
+    {
+        id: 2,
+        nombre: "Juan",
+        carrera: "IM",
+        semestre: 6,
+    }
+]
+
+app. get("/alumnos", async(req, res) => {
+    try{
+        const alumnos = await Alumno.find();
+        res.json(alumnos);
+    }catch(error){
+        res.status(500).json({
+            mensaje: "Error al obtener los alumnos",
+            error: error
+        })
+    }
+});
+
+app.get("/alumnos/:id", async(req, res) => {
+    try{
+        const id = (req.params.id);
+        const alumno = await Alumno.findById(id );
+        if(!alumno){
+            return res.status(404).json({
+                mensaje: "Alumno no encontrado"
+            })
+        }
+        res.json(alumno);
+    }catch(error){
+        res.status(500).json({
+            mensaje: "Error al obtener alumno",
+            error: error
+        });
+    };  
+});
+
+app.post("/alumnos", async(req, res) =>{
+    try{
+        const {nombre, carrera, semestre } = req.body;
+        if(!nombre || !carrera || !semestre){
+            return res.status(400).json({
+                mensaje: "Faltan datos del alumno"
+            });
+        }
+        const nuevoAlumno = new Alumno({
+            nombre,carrera,semestre
+        });
+
+        const alumnoGuardado = await nuevoAlumno.save();
+
+        res.json({
+            mensaje: "Alumno registrado correctamente", 
+            alumno: alumnoGuardado
+        });
+    }catch(error){
+        res.status(500).json({
+            mensaje: "Error al guardar alumno",
+            error: error
+        });
+    };
+
+});
+
+app.put("/alumnos/:id", async(req, res) => {
+    try{
+        const id = (req.params.id);
+        const { nombre, carrera, semestre} = req.body;
+
+        if(!nombre || !carrera || !semestre){
+            return res.status(400).json({
+                mensaje: "Faltan datos del alumno"
+            });
+        }
+       
+        const alumnoActualizado = await Alumno.finByIdAndUpdate(
+            id, 
+            {nombre, carrera, semestre}, 
+            {new: true, runValidators:true}
+        );
+
+        if(!alumnoActualizado){
+            return res.status(404).json({
+                mensaje: "Alumno no encontrado"
+            });
+        };
+
+        res.json({
+            mensaje: "Alumno actualizado correctamente",
+            alumno: alumnoActualizado
+        })
+    }catch(error){
+        res.status(500).json({
+            mensaje: "Error al actualizar alumno",
+            error: error
+        });
+    }
+
+});
+
+app.delete("/alumnos/:id", async(req, res)=> {
+    try{
+        const id = (req.params.id);
+        const alumnoEliminado = await Alumno.findByIdandDelete(
+            id
+        );
+
+        if(!alumnoEliminado){
+            return res.status(404).json({
+                mensaje: "Alumno no encontrado"
+            });
+        };
+
+        res.json({
+            mensaje: "Alumno eliminado correctamente",
+            alumno: alumnoEliminado
+        });
+    }catch(error){
+        res.status(500).json({
+            mensaje: "Error al eliminar alumno",
+            error: error
+        });
+    }
+});
+
 
 app.get("/", (req, res) => {
   res.send("¡Hola Mundo!");
