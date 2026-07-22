@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CineFlix · Catálogo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+:root {
+    --bg: #06060a;
+    --bg-elevated: #0e0e14;
+    --bg-card: #13131b;
+    --bg-card-hover: #1a1a24;
+    --accent: #e50914;
+    --accent-hover: #ff1a25;
+    --accent-glow: rgba(229, 9, 20, 0.4);
+    --accent-subtle: rgba(229, 9, 20, 0.08);
+    --gold: #f5c518;
+    --gold-dim: rgba(245, 197, 24, 0.15);
+    --green: #46d369;
+    --green-dim: rgba(70, 211, 105, 0.12);
+    --blue: #4a90d9;
+    --blue-dim: rgba(74, 144, 217, 0.12);
+    --text: #f0f0f5;
+    --text-dim: #8a8a9a;
+    --text-muted: #4a4a5a;
+    --border: #1e1e2a;
+    --border-light: rgba(255,255,255,0.06);
+    --radius: 8px;
+    --radius-lg: 12px;
+    --shadow-card: 0 4px 24px rgba(0,0,0,0.5);
+    --shadow-card-hover: 0 16px 48px rgba(0,0,0,0.7);
+    --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* ===== TOPBAR ===== */
+.topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 56px;
+    height: 64px;
+    position: sticky;
+    top: 0;
+    background: rgba(6,6,10,0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    z-index: 100;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.brand { display: flex; align-items: center; gap: 2px; }
+.brand-mark {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 30px;
+    letter-spacing: 4px;
+    color: var(--text);
+    line-height: 1;
+}
+.brand-mark--accent { color: var(--accent); }
+
+.topbar-nav { display: flex; align-items: center; gap: 32px; }
+.topbar-link {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-dim);
+    text-decoration: none;
+    cursor: pointer;
+    transition: color var(--transition);
+    padding: 4px 0;
+    position: relative;
+}
+.topbar-link:hover { color: var(--text); }
+.topbar-link.active { color: var(--text); }
+.topbar-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--accent);
+    border-radius: 1px;
+}
+
+.topbar-actions { display: flex; align-items: center; gap: 12px; }
+
+/* ===== BOTONES ===== */
+.btn {
+    border: none;
+    border-radius: 6px;
+    padding: 10px 20px;
+    font-size: 12px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all var(--transition);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+.btn:active { transform: scale(0.96); }
+
+.btn--primary {
+    background: var(--accent);
+    color: #fff;
+    box-shadow: 0 2px 16px var(--accent-glow);
+}
+.btn--primary:hover { background: var(--accent-hover); box-shadow: 0 4px 24px var(--accent-glow); }
+
+.btn--ghost {
+    background: rgba(255,255,255,0.05);
+    color: var(--text-dim);
+    border: 1px solid var(--border);
+}
+.btn--ghost:hover { background: rgba(255,255,255,0.08); color: var(--text); }
+
+.btn--sm { padding: 7px 14px; font-size: 11px; }
+
+.btn--red-outline {
+    background: transparent;
+    color: var(--accent);
+    border: 1px solid rgba(229,9,20,0.4);
+}
+.btn--red-outline:hover { background: var(--accent-subtle); }
+
+.plus { font-weight: 900; margin-right: 3px; font-size: 15px; }
+
+/* ===== HERO ===== */
+.hero {
+    position: relative;
+    padding: 72px 56px 40px;
+    background:
+        radial-gradient(ellipse 80% 50% at 20% 40%, rgba(229,9,20,0.07) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 60% at 80% 20%, rgba(74,144,217,0.04) 0%, transparent 50%),
+        linear-gradient(180deg, var(--bg-elevated) 0%, var(--bg) 100%);
+    overflow: hidden;
+    border-bottom: 1px solid var(--border-light);
+}
+.hero::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.015'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    pointer-events: none;
+}
+
+.hero-content { position: relative; z-index: 1; max-width: 1300px; margin: 0 auto; }
+
+.hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--accent-subtle);
+    border: 1px solid rgba(229,9,20,0.2);
+    border-radius: 20px;
+    padding: 5px 14px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 20px;
+}
+.hero-badge-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); animation: pulse 2s ease-in-out infinite; }
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+.hero h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 64px;
+    letter-spacing: 3px;
+    line-height: 1;
+    margin-bottom: 8px;
+    background: linear-gradient(90deg, #fff 0%, #c0c0d0 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+.hero-sub { color: var(--text-dim); font-size: 15px; margin-bottom: 28px; max-width: 500px; line-height: 1.5; }
+
+.hero-stats {
+    display: flex;
+    gap: 32px;
+    align-items: stretch;
+}
+.stat-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-lg);
+    padding: 16px 22px;
+    min-width: 150px;
+}
+.stat-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+}
+.stat-icon--red { background: var(--accent-subtle); border: 1px solid rgba(229,9,20,0.15); }
+.stat-icon--gold { background: var(--gold-dim); border: 1px solid rgba(245,197,24,0.15); }
+.stat-icon--blue { background: var(--blue-dim); border: 1px solid rgba(74,144,217,0.15); }
+.stat-icon--green { background: var(--green-dim); border: 1px solid rgba(70,211,105,0.15); }
+.stat-num { font-size: 26px; font-weight: 800; color: var(--text); line-height: 1; }
+.stat-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-muted); margin-top: 2px; }
+
+/* ===== SECCIONES ===== */
+.seccion {
+    padding: 32px 56px 80px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.seccion-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+}
+.seccion-titulo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 1.5px;
+    color: var(--text);
+}
+.seccion-count {
+    font-size: 13px;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.grid {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 20px;
+}
+
+/* ===== TARJETA ===== */
+.tarjeta {
+    border-radius: var(--radius);
+    overflow: hidden;
+    position: relative;
+    background: var(--bg-card);
+    cursor: default;
+    transition: transform var(--transition), box-shadow var(--transition);
+    border: 1px solid transparent;
+}
+.tarjeta:hover {
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: var(--shadow-card-hover);
+    border-color: var(--border);
+    z-index: 5;
+}
+
+.poster-wrap {
+    position: relative;
+    aspect-ratio: 2/3;
+    overflow: hidden;
+    background: var(--bg-elevated);
+}
+.poster-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.4s ease;
+}
+.tarjeta:hover .poster-wrap img { transform: scale(1.08); }
+
+.poster-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 48px;
+    color: rgba(255,255,255,0.6);
+    letter-spacing: 2px;
+    position: relative;
+}
+
+.poster-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(0deg, rgba(6,6,10,0.97) 0%, rgba(6,6,10,0.5) 35%, transparent 65%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 14px;
+}
+.tarjeta:hover .poster-overlay { opacity: 1; }
+
+.rating-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(0,0,0,0.75);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(245,197,24,0.3);
+    color: var(--gold);
+    font-size: 12px;
+    font-weight: 800;
+    padding: 4px 10px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    z-index: 2;
+}
+.rating-badge::before { content: '★'; font-size: 11px; }
+
+.serie-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: rgba(74,144,217,0.85);
+    backdrop-filter: blur(6px);
+    color: #fff;
+    font-size: 9px;
+    font-weight: 800;
+    padding: 3px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    z-index: 2;
+}
+
+.overlay-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-bottom: 10px;
+}
+.overlay-pill {
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 4px;
+    padding: 2px 7px;
+    font-size: 10px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.overlay-actions { display: flex; gap: 6px; }
+.overlay-btn {
+    flex: 1;
+    padding: 8px 0;
+    border: none;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all var(--transition);
+}
+.overlay-btn--edit {
+    background: rgba(255,255,255,0.12);
+    color: var(--text);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+.overlay-btn--edit:hover { background: rgba(255,255,255,0.2); }
+.overlay-btn--delete {
+    background: rgba(229,9,20,0.15);
+    color: var(--accent);
+    border: 1px solid rgba(229,9,20,0.25);
+}
+.overlay-btn--delete:hover { background: rgba(229,9,20,0.3); }
+
+.tarjeta-info { padding: 12px 14px 14px; }
+.tarjeta-titulo {
+    font-size: 13px;
+    font-weight: 700;
+    margin: 0 0 4px;
+    line-height: 1.3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.tarjeta-meta-line {
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+/* ===== ESTADO VACÍO ===== */
+.estado-vacio {
+    text-align: center;
+    color: var(--text-dim);
+    padding: 80px 20px;
+    border: 1px dashed var(--border);
+    border-radius: var(--radius-lg);
+    background: rgba(255,255,255,0.01);
+}
+.estado-vacio-icon {
+    width: 64px; height: 64px;
+    border-radius: 16px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    margin: 0 auto 20px;
+    opacity: 0.5;
+}
+.estado-vacio h3 { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 1px; margin-bottom: 6px; color: var(--text); }
+.estado-vacio p { font-size: 14px; line-height: 1.5; }
+
+/* ===== MODAL ===== */
+dialog { border: none; }
+
+.modal-dialog {
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: var(--bg-elevated);
+    color: var(--text);
+    padding: 0;
+    width: min(540px, 92vw);
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 32px 100px rgba(0,0,0,0.8);
+}
+.modal-dialog::backdrop {
+    background: rgba(0,0,0,0.8);
+    backdrop-filter: blur(6px);
+}
+
+#formulario, #formularioSerie {
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+}
+.modal-header h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 1.5px;
+    font-size: 26px;
+}
+.btn-cerrar {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition);
+}
+.btn-cerrar:hover { background: rgba(255,255,255,0.1); color: var(--text); }
+
+label {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+}
+
+input {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 8px;
+    padding: 11px 14px;
+    font-size: 14px;
+    font-family: inherit;
+    transition: border-color var(--transition), box-shadow var(--transition);
+}
+input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.fila-doble {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+.fila-triple {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 14px;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 8px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 900px) {
+    .topbar { padding: 0 24px; }
+    .hero { padding: 48px 24px 32px; }
+    .hero h1 { font-size: 44px; }
+    .seccion { padding: 24px 24px 60px; }
+    .hero-stats { gap: 16px; flex-wrap: wrap; }
+    .stat-card { min-width: 130px; padding: 12px 16px; }
+    .stat-num { font-size: 22px; }
+}
+
+@media (max-width: 640px) {
+    .topbar-nav { display: none; }
+    .hero h1 { font-size: 36px; }
+    .hero-stats { gap: 10px; }
+    .stat-card { min-width: 0; flex: 1; padding: 10px 14px; gap: 10px; }
+    .stat-icon { width: 34px; height: 34px; font-size: 15px; }
+    .stat-num { font-size: 18px; }
+    .grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
+    .fila-doble { grid-template-columns: 1fr; }
+    .fila-triple { grid-template-columns: 1fr 1fr; }
+    .seccion-header { flex-direction: column; align-items: flex-start; gap: 8px; }
+}
+
+@media (max-width: 420px) {
+    .grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .tarjeta-info { padding: 8px 10px 10px; }
+    .tarjeta-titulo { font-size: 12px; }
+    .poster-placeholder { font-size: 36px; }
+}
+    </style>
+</head>
+
+<body>
+
+    <header class="topbar">
+        <div class="brand">
+            <span class="brand-mark">CINE</span><span class="brand-mark brand-mark--accent">FLIX</span>
+        </div>
+        <nav class="topbar-nav">
+            <a class="topbar-link active" data-tab="peliculas">Películas</a>
+            <a class="topbar-link" data-tab="series">Series</a>
+        </nav>
+        <div class="topbar-actions">
+            <button id="btnConsultar" class="btn btn--ghost btn--sm">Actualizar</button>
+            <button id="btnAbrirModal" class="btn btn--primary">
+                <span class="plus">+</span> Agregar
+            </button>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-badge">
+                <span class="hero-badge-dot"></span>
+                Panel de administración
+            </div>
+            <h1 id="heroTitulo">Películas</h1>
+            <p class="hero-sub" id="heroSub">Administra el catálogo de películas de tu plataforma de streaming.</p>
+            <div class="hero-stats">
+                <div class="stat-card">
+                    <div class="stat-icon stat-icon--red" id="statIconPrincipal">🎬</div>
+                    <div>
+                        <div class="stat-num" id="statTotal">0</div>
+                        <div class="stat-label" id="statLabelPrincipal">Películas</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon stat-icon--gold">⭐</div>
+                    <div>
+                        <div class="stat-num" id="statPromedio">-</div>
+                        <div class="stat-label">Calificación</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon stat-icon--blue">📺</div>
+                    <div>
+                        <div class="stat-num" id="statSeries">0</div>
+                        <div class="stat-label">Series</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECCIÓN PELÍCULAS -->
+    <main class="seccion" id="seccionPeliculas">
+        <div class="seccion-header">
+            <h2 class="seccion-titulo">Catálogo de películas</h2>
+            <span class="seccion-count" id="contadorPeliculas"></span>
+        </div>
+        <ul id="listaPeliculas" class="grid"></ul>
+        <div id="estadoVacioPeliculas" class="estado-vacio" hidden>
+            <div class="estado-vacio-icon">🎬</div>
+            <h3>Sin películas registradas</h3>
+            <p>Presiona <strong>«+ Agregar»</strong> para registrar la primera película.</p>
+        </div>
+    </main>
+
+    <!-- SECCIÓN SERIES -->
+    <main class="seccion" id="seccionSeries" hidden>
+        <div class="seccion-header">
+            <h2 class="seccion-titulo">Catálogo de series</h2>
+            <span class="seccion-count" id="contadorSeries"></span>
+        </div>
+        <ul id="listaSeries" class="grid"></ul>
+        <div id="estadoVacioSeries" class="estado-vacio" hidden>
+            <div class="estado-vacio-icon">📺</div>
+            <h3>Sin series registradas</h3>
+            <p>Presiona <strong>«+ Agregar»</strong> para registrar la primera serie.</p>
+        </div>
+    </main>
+
+    <!-- MODAL PELÍCULA -->
+    <dialog id="modalPelicula" class="modal-dialog">
+        <form id="formulario" method="dialog">
+            <div class="modal-header">
+                <h2 id="modalTitulo">Registrar película</h2>
+                <button type="button" id="btnCerrarModal" class="btn-cerrar">✕</button>
+            </div>
+            <input type="hidden" id="peliculaId">
+            <label>
+                Título
+                <input type="text" id="titulo" placeholder="Ej. Spider-Man: No Way Home" required>
+            </label>
+            <div class="fila-doble">
+                <label>Género <input type="text" id="genero" placeholder="Ej. Acción" required></label>
+                <label>Idioma <input type="text" id="idioma" placeholder="Ej. Inglés" required></label>
+            </div>
+            <div class="fila-doble">
+                <label>Año <input type="number" id="año" placeholder="Ej. 2021" required></label>
+                <label>Duración (min) <input type="number" id="duracion" placeholder="Ej. 148" required></label>
+            </div>
+            <div class="fila-doble">
+                <label>Calificación (0-10) <input type="number" id="calificacion" min="0" max="10" step="0.1" placeholder="Ej. 8.2" required></label>
+                <label>No. Control <input type="text" id="nc" placeholder="Ej. 14400975" required></label>
+            </div>
+            <label>Portada (URL) <input type="url" id="portada" placeholder="https://ejemplo.com/poster.jpg"></label>
+            <div class="modal-footer">
+                <button type="button" id="btnCancelar" class="btn btn--ghost">Cancelar</button>
+                <button type="submit" class="btn btn--primary">Guardar película</button>
+            </div>
+        </form>
+    </dialog>
+
+    <!-- MODAL SERIE -->
+    <dialog id="modalSerie" class="modal-dialog">
+        <form id="formularioSerie" method="dialog">
+            <div class="modal-header">
+                <h2 id="modalSerieTitulo">Registrar serie</h2>
+                <button type="button" id="btnCerrarModalSerie" class="btn-cerrar">✕</button>
+            </div>
+            <input type="hidden" id="serieId">
+            <label>
+                Título
+                <input type="text" id="sTitulo" placeholder="Ej. Stranger Things" required>
+            </label>
+            <div class="fila-doble">
+                <label>Género <input type="text" id="sGenero" placeholder="Ej. Ciencia ficción" required></label>
+                <label>Idioma <input type="text" id="sIdioma" placeholder="Ej. Inglés" required></label>
+            </div>
+            <div class="fila-triple">
+                <label>Año <input type="number" id="sAño" placeholder="Ej. 2016" required></label>
+                <label>Temporadas <input type="number" id="sTemporadas" placeholder="Ej. 4" min="1" required></label>
+                <label>Episodios <input type="number" id="sEpisodios" placeholder="Ej. 34" min="1" required></label>
+            </div>
+            <div class="fila-doble">
+                <label>Calificación (0-10) <input type="number" id="sCalificacion" min="0" max="10" step="0.1" placeholder="Ej. 8.7" required></label>
+                <label>No. Control <input type="text" id="sNc" placeholder="Ej. 14400975" required></label>
+            </div>
+            <label>Portada (URL) <input type="url" id="sPortada" placeholder="https://ejemplo.com/poster.jpg"></label>
+            <div class="modal-footer">
+                <button type="button" id="btnCancelarSerie" class="btn btn--ghost">Cancelar</button>
+                <button type="submit" class="btn btn--primary">Guardar serie</button>
+            </div>
+        </form>
+    </dialog>
+
+    <script src="app.js"></script>
+
+</body>
+
+</html>

@@ -1,13 +1,17 @@
 const express = require("express");
 const morgan = require("morgan");
 const mongoose = require("mongoose");
+const cors = require("cors");
+const path = require("path");
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 const port = 3000;
 const dns = require('dns');
 
 app.use(morgan("dev"));
+app.use(express.static(path.join(__dirname)));
 
 dns.setServers([
   '1.1.1.1',
@@ -26,6 +30,10 @@ app.listen(port, () => {
   console.log("Servidor iniciado en http://localhost:" + port);
 });
 
+app.get("/", (req, res) => {
+  res.send("Bienvenido a la API de Peliculas y Series de Netflix");
+});
+
 const peliculaSchema = new mongoose.Schema(
     {
         titulo: { type: String, required: true, trim: true },
@@ -34,7 +42,8 @@ const peliculaSchema = new mongoose.Schema(
         duracion: { type: Number, required: true, min: 1 },
         idioma: { type: String, required: true, trim: true },
         calificacion: { type: Number, required: true, min: 0, max: 10 },
-        nc: { type: String, required: true, trim: true }
+        nc: { type: String, required: true, trim: true },
+        portada: { type: String, trim: true, default: "" }
     },
     {
         timestamps: true
@@ -50,7 +59,8 @@ const serieSchema = new mongoose.Schema(
         episodios: { type: Number, required: true, min: 1 },
         idioma: { type: String, required: true, trim: true },
         calificacion: { type: Number, required: true, min: 0, max: 10 },
-        nc: { type: String, required: true, trim: true }
+        nc: { type: String, required: true, trim: true },
+        portada: { type: String, trim: true, default: "" }
     },
     {
         timestamps: true

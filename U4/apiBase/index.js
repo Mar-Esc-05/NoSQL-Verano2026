@@ -110,7 +110,7 @@ app.put("/alumnos/:id", async(req, res) => {
             });
         }
        
-        const alumnoActualizado = await Alumno.finByIdAndUpdate(
+        const alumnoActualizado = await Alumno.findByIdAndUpdate(
             id, 
             {nombre, carrera, semestre}, 
             {new: true, runValidators:true}
@@ -138,7 +138,7 @@ app.put("/alumnos/:id", async(req, res) => {
 app.delete("/alumnos/:id", async(req, res)=> {
     try{
         const id = (req.params.id);
-        const alumnoEliminado = await Alumno.findByIdandDelete(
+        const alumnoEliminado = await Alumno.findByIdAndDelete(
             id
         );
 
@@ -216,7 +216,7 @@ app.get("/suma/:a/:b", (req, res) => {
     res.send(`Resultado: ${suma}`);
 });
 
-app.get("multiplicacion/:a/:b", (req, res) => {
+app.get("/multiplicacion/:a/:b", (req, res) => {
     const a = parseInt(req.params.a);
     const b = parseInt(req.params.b);
     const multiplicacion = a * b;
